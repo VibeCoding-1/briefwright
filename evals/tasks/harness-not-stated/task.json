@@ -1,0 +1,12 @@
+{
+  "id": "harness-not-stated",
+  "opening": "Write me the master prompt for another session: add a command-line interface to slugger so that `python3 -m slugger \"Some Text\"` prints the slug, with tests for it.",
+  "working_folder": "project",
+  "fixtures": {
+    "project/slugger/slugger.py": "../../fixtures/slugger/slugger.py",
+    "project/slugger/test_slugger.py": "../../fixtures/slugger/test_slugger.py"
+  },
+  "hidden_brief": "hidden-brief.md",
+  "max_person_turns": 8,
+  "invoke": "auto"
+}

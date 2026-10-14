@@ -1,0 +1,11 @@
+{
+  "id": "hero-loop-against-site",
+  "opening": "loop this hero section (hero.html) against linear.app until three critics agree ours looks better",
+  "working_folder": "project",
+  "fixtures": {
+    "project/hero.html": "../../fixtures/hero.html"
+  },
+  "hidden_brief": "hidden-brief.md",
+  "max_person_turns": 8,
+  "invoke": "auto"
+}

@@ -1,0 +1,65 @@
+# Optional: a Codex review of each pull request opened from this repository's own branches, posted as a comment.
+# Off until a maintainer adds the OPENAI_API_KEY secret and then sets the repository variable CODEX_REVIEW to true.
+# It never runs for a fork, for a run Dependabot starts, or on a pull request Dependabot opened, even when a person
+# pushes to its branch or re-runs the review. The job that holds the key can only read; a second job, with no key,
+# posts the comment. No pull request text reaches the prompt, which is a fixed file.
+# Every action is pinned by commit SHA, with its release tag in the comment above it.
+name: Codex review
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+permissions:
+  contents: read
+
+jobs:
+  review:
+    if: vars.CODEX_REVIEW == 'true' && github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]' && github.event.pull_request.user.login != 'dependabot[bot]'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    outputs:
+      final-message: ${{ steps.codex.outputs.final-message }}
+    steps:
+      # actions/checkout v7.0.1; two commits deep, so the merge commit's first parent, the base, is present
+      - name: Check out the merge of the pull request
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+          fetch-depth: 2
+      # openai/codex-action v1.12; the key is this step's input and appears nowhere else. The Codex CLI that
+      # the action installs and runs with the key is pinned too (permission-profile needs 0.138.0 or later).
+      - name: Review with Codex
+        id: codex
+        uses: openai/codex-action@86365089eb2b84e0a8fb0717b304f8bdcb13b20e
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          codex-version: "0.160.0"
+          prompt-file: .github/codex/review-prompt.md
+          permission-profile: ":read-only"
+          safety-strategy: drop-sudo
+
+  comment:
+    needs: review
+    if: needs.review.outputs.final-message != ''
+    runs-on: ubuntu-24.04
+    permissions:
+      pull-requests: write
+    steps:
+      # actions/github-script v9.0.0; the review reaches the script through env, never through its source
+      - name: Post the review as a comment
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
+        env:
+          REVIEW: ${{ needs.review.outputs.final-message }}
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: process.env.REVIEW,
+            });

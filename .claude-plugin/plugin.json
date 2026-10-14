@@ -1,0 +1,12 @@
+{
+  "name": "briefwright",
+  "version": "1.0.0",
+  "description": "Describe the job in one sentence. briefwright asks what's missing, then writes the full plan your AI agent can follow on its own: a master prompt for Claude Code, Codex or any agent that reads Agent Skills.",
+  "author": {
+    "name": "VibeCoding-1"
+  },
+  "homepage": "https://github.com/VibeCoding-1/briefwright",
+  "repository": "https://github.com/VibeCoding-1/briefwright",
+  "license": "Apache-2.0",
+  "keywords": ["agent-skills", "claude-code", "codex", "prompt-engineering", "master-prompt", "ai-agents", "coding-agents"]
+}

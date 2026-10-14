@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="536" viewBox="0 0 960 536" role="img" aria-labelledby="title">
+<title id="title">One message in. It asks what’s missing. A plan your agent can run alone.</title>
+<style>.a{animation:12.5s cubic-bezier(.2,.6,.2,1) infinite}
+@keyframes loop{0%{opacity:0}2.4%,93.6%{opacity:1}97.6%,100%{opacity:0}}
+@keyframes rise-30{0%,2.4%{opacity:0;transform:translateY(8px)}8%{opacity:1;transform:none}}
+@keyframes rise-60{0%,4.8%{opacity:0;transform:translateY(8px)}10.4%{opacity:1;transform:none}}
+@keyframes draw-240{0%,19.2%{stroke-dashoffset:40}23.2%{stroke-dashoffset:0}}
+@keyframes down-240{0%,19.2%{opacity:0;transform:translateY(-40px)}23.2%{opacity:1;transform:none}}
+@keyframes settle-260{0%,20.8%{fill:#eef2f8}26.4%{fill:#8d99ab}}
+@keyframes rise-260{0%,20.8%{opacity:0;transform:translateY(8px)}26.4%{opacity:1;transform:none}}
+@keyframes draw-420{0%,33.6%{stroke-dashoffset:40}37.6%{stroke-dashoffset:0}}
+@keyframes down-420{0%,33.6%{opacity:0;transform:translateY(-40px)}37.6%{opacity:1;transform:none}}
+@keyframes settle-440{0%,35.2%{fill:#eef2f8}40.8%{fill:#8d99ab}}
+@keyframes rise-440{0%,35.2%{opacity:0;transform:translateY(8px)}40.8%{opacity:1;transform:none}}
+@keyframes rise-490{0%,39.2%{opacity:0;transform:translateY(8px)}44.8%{opacity:1;transform:none}}
+@keyframes reach-490{0%,39.2%{stroke-dashoffset:176}43.2%{stroke-dashoffset:0}}
+@keyframes across-490{0%,39.2%{opacity:0;transform:translateX(-176px)}43.2%{opacity:1;transform:none}}
+@keyframes lit-540{0%,43.2%{stroke:#1f2a3a}48.8%{stroke:#6ee7b7}}
+@keyframes pick-570{0%,45.6%{fill:#8d99ab}51.2%{fill:#6ee7b7}}
+@keyframes pick-590{0%,47.2%{fill:#8d99ab}52.8%{fill:#6ee7b7}}
+@keyframes pick-610{0%,48.8%{fill:#8d99ab}54.4%{fill:#6ee7b7}}
+@keyframes pick-630{0%,50.4%{fill:#8d99ab}56%{fill:#6ee7b7}}
+@media (prefers-reduced-motion:reduce){.a{animation:none!important}}
+.beat{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,"Liberation Sans",sans-serif;font-size:44px;font-weight:600;letter-spacing:-.02em;fill:#eef2f8}
+.settle{fill:#8d99ab}
+.quote{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,"Liberation Sans",sans-serif;font-size:24px;fill:#8d99ab}
+.card{fill:#111925;stroke:#6ee7b7;stroke-width:1}
+.rule{fill:none;stroke:#1f2a3a;stroke-width:1}
+.file{font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono","DejaVu Sans Mono",monospace;font-size:22px;fill:#eef2f8}
+.row{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,"Liberation Sans",sans-serif;font-size:24px;fill:#8d99ab}
+.pick{fill:#6ee7b7}
+.gap{fill:#5d6a7d}
+.arrow{fill:none;stroke:#5d6a7d;stroke-width:2px;stroke-linecap:round;stroke-linejoin:round}
+.arrow.into{stroke:#6ee7b7}
+.line{stroke-dasharray:40}
+.line.reach{stroke-dasharray:176}</style>
+<rect x=".5" y=".5" width="959" height="535" rx="16" fill="#0b1018" stroke="#1f2a3a"/>
+<g class="a" data-loop="1" style="animation-name:loop">
+<g class="a" data-beat="1" style="animation-name:rise-30">
+<text class="beat a settle" x="56" y="104" style="animation-name:settle-260">One message in.</text>
+</g>
+<g class="a" data-quote="1" style="animation-name:rise-60">
+<text class="quote" x="56" y="152">“…a landing page for my supplement</text>
+<text class="quote" x="56" y="184">brand that looks premium…”</text>
+</g>
+<g class="a" data-beat="2" style="animation-name:rise-260">
+<text class="beat a settle" x="56" y="288" style="animation-name:settle-440">It asks what’s missing.</text>
+</g>
+<g class="a" data-beat="3" style="animation-name:rise-440">
+<text class="beat" x="56" y="392">A plan your agent</text>
+<text class="beat" x="56" y="448">can run alone.</text>
+</g>
+<g class="arrow" data-arrow="1">
+<path class="line a" d="M64 200V240" style="animation-name:draw-240"/>
+<path class="head a" d="M58 234L64 240L70 234" style="animation-name:down-240"/>
+</g>
+<g class="arrow" data-arrow="2">
+<path class="line a" d="M64 304V344" style="animation-name:draw-420"/>
+<path class="head a" d="M58 338L64 344L70 338" style="animation-name:down-420"/>
+</g>
+<g class="a" data-card="master-prompt.md" style="animation-name:rise-490">
+<rect class="card a" x="624.5" y="72.5" width="279" height="391" rx="12" style="animation-name:lit-540"/>
+<text class="file" x="648" y="112" data-file="master-prompt.md">master-prompt.md</text>
+<path class="rule" d="M624.5 136.5H903.5"/>
+<g class="gap" data-gap="1"><circle cx="650.5" cy="149" r="2.5"/><circle cx="650.5" cy="156" r="2.5"/><circle cx="650.5" cy="163" r="2.5"/></g>
+<text class="row a pick" x="648" y="196" data-row="Mission" style="animation-name:pick-570">Mission</text>
+<g class="gap" data-gap="5"><circle cx="650.5" cy="213" r="2.5"/><circle cx="650.5" cy="220" r="2.5"/><circle cx="650.5" cy="227" r="2.5"/></g>
+<text class="row a pick" x="648" y="260" data-row="Method" style="animation-name:pick-590">Method</text>
+<text class="row a pick" x="648" y="300" data-row="The bar" style="animation-name:pick-610">The bar</text>
+<g class="gap" data-gap="1"><circle cx="650.5" cy="317" r="2.5"/><circle cx="650.5" cy="324" r="2.5"/><circle cx="650.5" cy="331" r="2.5"/></g>
+<text class="row a pick" x="648" y="364" data-row="Stop rules and interrupt policy" style="animation-name:pick-630">Stop rules and</text>
+<text class="row a pick" x="648" y="392" data-row="Stop rules and interrupt policy" style="animation-name:pick-630">interrupt policy</text>
+<g class="gap" data-gap="3"><circle cx="650.5" cy="409" r="2.5"/><circle cx="650.5" cy="416" r="2.5"/><circle cx="650.5" cy="423" r="2.5"/></g>
+</g>
+<g class="arrow into" data-arrow="3">
+<path class="line a reach" d="M416 440H592" style="animation-name:reach-490"/>
+<path class="head a" d="M586 434L592 440L586 446" style="animation-name:across-490"/>
+</g>
+</g>
+</svg>

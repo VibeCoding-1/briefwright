@@ -1,0 +1,9 @@
+{
+  "id": "oversized-no-cap",
+  "opening": "Prepare the master prompt: build me an integrated repository of agent skills, subagents, hooks and tools, assembled from the best open-source pieces, that has to come out notably better than the big public repositories that tried the same thing, measured. No cap on time or tokens.",
+  "working_folder": "project",
+  "fixtures": {},
+  "hidden_brief": "hidden-brief.md",
+  "max_person_turns": 10,
+  "invoke": "slash"
+}

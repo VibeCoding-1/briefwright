@@ -1,0 +1,9 @@
+{
+  "id": "battle-royale-lead",
+  "opening": "Prepare the master prompt: build me a battle royale game for the browser, one playable round against bots. Claude Code CLI on a Linux box with no GPU, model {MODEL}, one session, I will be around to answer.",
+  "working_folder": "project",
+  "fixtures": {},
+  "hidden_brief": "hidden-brief.md",
+  "max_person_turns": 10,
+  "invoke": "slash"
+}

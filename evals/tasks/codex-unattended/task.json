@@ -1,0 +1,12 @@
+{
+  "id": "codex-unattended",
+  "opening": "Write me the master prompt for a Codex CLI run: add a command-line interface to slugger so that `python3 -m slugger \"Some Text\"` prints the slug, with tests. I'll start it headless with codex exec on this laptop tonight and check it in the morning; model {MODEL} at high reasoning effort.",
+  "working_folder": "project",
+  "fixtures": {
+    "project/slugger/slugger.py": "../../fixtures/slugger/slugger.py",
+    "project/slugger/test_slugger.py": "../../fixtures/slugger/test_slugger.py"
+  },
+  "hidden_brief": "hidden-brief.md",
+  "max_person_turns": 8,
+  "invoke": "auto"
+}

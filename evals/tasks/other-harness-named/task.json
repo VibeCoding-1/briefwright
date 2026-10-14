@@ -1,0 +1,12 @@
+{
+  "id": "other-harness-named",
+  "opening": "Write me the prompt for another session to make slugify pass all four tests in slugger/test_slugger.py. It runs in Wrenchbox, our in-house agent runner, on {MODEL}, and I'll watch it.",
+  "working_folder": "project",
+  "fixtures": {
+    "project/slugger/slugger.py": "../../fixtures/slugger/slugger.py",
+    "project/slugger/test_slugger.py": "../../fixtures/slugger/test_slugger.py"
+  },
+  "hidden_brief": "hidden-brief.md",
+  "max_person_turns": 6,
+  "invoke": "auto"
+}

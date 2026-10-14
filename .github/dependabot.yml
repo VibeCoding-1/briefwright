@@ -1,0 +1,16 @@
+# Keeps the workflows' actions current: once a month, one pull request that moves every pin to the commit of the
+# action's latest release, once that release is seven days old. Each pin stays a full commit SHA, so the pull
+# request meets the workflow rules in tests/test_workflows.py. The release tag in the comment above a pin is
+# not on the pin's line, so update it in the same pull request.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    cooldown:
+      default-days: 7
+    groups:
+      actions:
+        patterns:
+          - "*"

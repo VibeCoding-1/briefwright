@@ -1,0 +1,66 @@
+# OpenSSF Scorecard: rates this repository's security practices on every push to main, once a week and by hand,
+# and uploads the results to code scanning, as the Scorecard action documents. Code scanning needs a public
+# repository (a private one needs a paid plan), so while this repository is private the first job says so and
+# the analysis is skipped, and the run still succeeds; the analysis starts on its own once the repository is
+# public. The results are not published to the Scorecard API: that would need the id-token: write permission too.
+# Every action is pinned by commit SHA, with its release tag in the comment above it.
+name: Scorecard
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: "23 4 * * 2"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  visibility:
+    name: Check that the repository is public
+    runs-on: ubuntu-24.04
+    outputs:
+      analyze: ${{ steps.visibility.outputs.analyze }}
+    steps:
+      # actions/github-script v9.0.0
+      - name: Read the repository's visibility
+        id: visibility
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
+        with:
+          script: |
+            const { data } = await github.rest.repos.get(context.repo);
+            core.setOutput("analyze", String(!data.private && !data.fork));
+            if (data.private) {
+              core.notice("The repository is private, so the Scorecard analysis is skipped until it is public.");
+            } else if (data.fork) {
+              core.notice("Scorecard does not run on a fork, so the analysis is skipped.");
+            }
+
+  analysis:
+    name: Scorecard analysis
+    needs: visibility
+    if: needs.visibility.outputs.analyze == 'true'
+    runs-on: ubuntu-24.04
+    permissions:
+      # to upload the results to code scanning; the job runs only the actions the Scorecard action allows beside it
+      security-events: write
+    steps:
+      # actions/checkout v7.0.1
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      # ossf/scorecard-action v2.4.4
+      - name: Run the analysis
+        uses: ossf/scorecard-action@2d1146689b8cda280b9bc96326124645441f03bc
+        with:
+          results_file: results.sarif
+          results_format: sarif
+          publish_results: false
+      # github/codeql-action v4.38.3
+      - name: Upload the results to code scanning
+        uses: github/codeql-action/upload-sarif@24c54180a607b1449ed407dd24f251e4e9147c8d
+        with:
+          sarif_file: results.sarif

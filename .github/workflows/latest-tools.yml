@@ -1,0 +1,99 @@
+# Once a week, and by hand: every check CI runs, on the newest release of everything CI pins (Python, the
+# validators, the Claude Code CLI) and of the Codex CLI, so a new release that breaks this repository shows up
+# here before a user meets it. The installs are unpinned on purpose: that is the point of this check. It makes
+# no model call and uses no secret; Codex has no validator, so its CLI is installed and its version recorded.
+# When the check fails on the default branch, the second job opens one issue with a link to the run, or comments
+# on that issue if it is still open; it never opens a second one while the first is open, and it checks out
+# nothing and runs no code from the repository.
+# Every action is pinned by commit SHA, with its release tag in the comment above it.
+name: Latest tools
+
+on:
+  schedule:
+    - cron: "17 5 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  PYTHONDONTWRITEBYTECODE: "1"
+
+jobs:
+  check:
+    name: Every check on the newest tools
+    runs-on: ubuntu-24.04
+    steps:
+      # actions/checkout v7.0.1
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      # actions/setup-python v7.0.0; the newest stable Python, looked up at every run
+      - name: Set up the newest Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.x"
+          check-latest: true
+      # Unpinned on purpose: the newest release of each validator CI pins, and of both CLIs.
+      - name: Install the newest validators and CLIs
+        run: |
+          python -m pip install --upgrade skills-ref click strictyaml check-jsonschema
+          npm i -g @anthropic-ai/claude-code@latest @openai/codex@latest
+      - name: Show the versions under test
+        run: |
+          python --version
+          python -m pip show skills-ref click strictyaml check-jsonschema | grep -E "^(Name|Version):"
+          claude --version
+          codex --version
+      - name: Scan for secrets and personal data
+        run: python tools/scan_public.py --tree . --commit HEAD --warn-metadata
+      - name: Run the tests
+        run: python tests/run_tests.py
+      - name: Check the skill
+        run: python tools/check_skill.py
+      - name: Check the manifests
+        run: python tools/check_manifests.py
+      - name: Validate the skill against the Agent Skills specification
+        run: agentskills validate skills/briefwright
+      - name: Validate plugin.json against the Agent Plugins 1.0.0 schema
+        run: check-jsonschema --schemafile https://agent-plugins.org/schemas/1.0.0/plugin.schema.json plugin.json
+      - name: Validate the Claude Code plugin
+        run: claude plugin validate . --strict
+
+  report:
+    name: Open or update the issue
+    needs: check
+    if: failure() && (github.event_name == 'schedule' || github.ref_name == github.event.repository.default_branch)
+    runs-on: ubuntu-24.04
+    permissions:
+      # to open the issue or comment on it; this job checks out nothing and runs only the script below
+      issues: write
+    steps:
+      # actions/github-script v9.0.0
+      - name: Open the issue, or comment on the open one
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
+        with:
+          script: |
+            const title = "The weekly check on the newest tools fails";
+            const run = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const open = await github.paginate(github.rest.issues.listForRepo,
+              { ...context.repo, state: "open", per_page: 100 });
+            const issue = open.find((item) => !item.pull_request && item.title === title
+              && item.user.login === "github-actions[bot]");
+            if (issue) {
+              await github.rest.issues.createComment({ ...context.repo, issue_number: issue.number,
+                body: `It failed again: ${run}` });
+              core.notice(`Commented on #${issue.number}.`);
+              return;
+            }
+            const body = [
+              "The check that runs every CI check on the newest Python, validators, Claude Code CLI and Codex CLI "
+                + `failed: ${run}`,
+              "",
+              "The run's step \"Show the versions under test\" lists what it installed; the first failing step shows "
+                + "what broke.",
+              "Each later failure adds a comment here while this issue is open. Close it once the check passes again.",
+            ].join("\n");
+            const { data } = await github.rest.issues.create({ ...context.repo, title, body });
+            core.notice(`Opened #${data.number}.`);

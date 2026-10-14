@@ -1,0 +1,12 @@
+{
+  "id": "no-subagents",
+  "opening": "Write me the master prompt for another session: add a max_length option to slugger's slugify that cuts at a word boundary, with tests. It runs in Wrenchbox, our in-house agent runner, on {MODEL}, and Wrenchbox cannot start subagents. I'll be around while it runs, and I want an independent review of the change before it counts as done.",
+  "working_folder": "project",
+  "fixtures": {
+    "project/slugger/slugger.py": "../../fixtures/slugger/slugger.py",
+    "project/slugger/test_slugger.py": "../../fixtures/slugger/test_slugger.py"
+  },
+  "hidden_brief": "hidden-brief.md",
+  "max_person_turns": 8,
+  "invoke": "auto"
+}

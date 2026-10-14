@@ -1,0 +1,84 @@
+# A short welcome on someone's first issue and on their first pull request in this repository; never on a
+# maintainer's, a bot's, or a second one. Nothing is checked out and no code from the repository or from a pull
+# request runs: each job is one script, fixed in this file, that reads from the event only the number, the author
+# and the author's association, and posts a fixed text.
+# pull_request_target rather than pull_request: under pull_request, a pull request from a fork gets a read-only
+# token, so no welcome could be posted. pull_request_target runs this file as the default branch holds it, never
+# as the pull request changes it, which is safe only because nothing here checks out or runs the pull request.
+# Every action is pinned by commit SHA, with its release tag in the comment above it.
+name: Welcome
+
+on:
+  issues:
+    types:
+      - opened
+  pull_request_target:
+    types:
+      - opened
+
+permissions:
+  contents: read
+
+jobs:
+  issue:
+    name: Welcome a first issue
+    if: github.event_name == 'issues'
+    runs-on: ubuntu-24.04
+    permissions:
+      # to comment on the issue; this job checks out nothing and runs only the script below
+      issues: write
+    steps:
+      # actions/github-script v9.0.0
+      - name: Welcome the author of a first issue
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
+        with:
+          script: |
+            const issue = context.payload.issue;
+            if (issue.user.type === "Bot" || ["OWNER", "MEMBER", "COLLABORATOR"].includes(issue.author_association)) {
+              return;
+            }
+            const theirs = await github.paginate(github.rest.issues.listForRepo,
+              { ...context.repo, creator: issue.user.login, state: "all", per_page: 100 });
+            if (theirs.some((item) => !item.pull_request && item.number !== issue.number)) {
+              return;
+            }
+            const repository = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}`;
+            await github.rest.issues.createComment({ ...context.repo, issue_number: issue.number, body: [
+              "Thank you for opening your first issue here. A maintainer will read it.",
+              "",
+              `Until then, [CONTRIBUTING.md](${repository}/blob/HEAD/CONTRIBUTING.md) says how a change is agreed and `
+                + "checked. If this is a vulnerability, please report it privately instead, as "
+                + `[SECURITY.md](${repository}/blob/HEAD/SECURITY.md) says.`,
+            ].join("\n") });
+
+  pull-request:
+    name: Welcome a first pull request
+    if: github.event_name == 'pull_request_target'
+    runs-on: ubuntu-24.04
+    permissions:
+      # to comment on the pull request; this job checks out nothing and runs only the script below
+      pull-requests: write
+    steps:
+      # actions/github-script v9.0.0
+      - name: Welcome the author of a first pull request
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
+        with:
+          script: |
+            const pull = context.payload.pull_request;
+            if (pull.user.type === "Bot" || ["OWNER", "MEMBER", "COLLABORATOR"].includes(pull.author_association)) {
+              return;
+            }
+            const pulls = await github.paginate(github.rest.pulls.list,
+              { ...context.repo, state: "all", per_page: 100 });
+            if (pulls.some((item) => item.user.login === pull.user.login && item.number !== pull.number)) {
+              return;
+            }
+            const repository = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}`;
+            await github.rest.issues.createComment({ ...context.repo, issue_number: pull.number, body: [
+              "Thank you for your first pull request here. CI runs the tests, the self-check and the scanners on it "
+                + "(on a first pull request, GitHub may wait for a maintainer to approve that run), and a maintainer "
+                + "reviews it once they pass.",
+              "",
+              `[CONTRIBUTING.md](${repository}/blob/HEAD/CONTRIBUTING.md) lists the rules a change keeps, among them `
+                + "a line in CHANGELOG.md under `## [Unreleased]`.",
+            ].join("\n") });

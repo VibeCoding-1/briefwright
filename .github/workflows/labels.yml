@@ -1,0 +1,41 @@
+# By hand, from the Actions tab: creates each label the issue templates apply, or sets its colour and description
+# to the list below if it exists. Run it once when the repository is published, and again after changing the
+# list; tests/test_workflows.py keeps the list in step with the templates. A job run by hand rather than a command
+# to type: it needs no tool on the maintainer's machine, and only someone who can already write to the repository
+# can start it. It checks out nothing and runs no code from the repository.
+# Every action is pinned by commit SHA, with its release tag in the comment above it.
+name: Labels
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  labels:
+    name: Create or update the labels
+    runs-on: ubuntu-24.04
+    permissions:
+      # to create and edit labels; this job checks out nothing and runs only the script below
+      issues: write
+    steps:
+      # actions/github-script v9.0.0
+      - name: Create or update the labels
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
+        with:
+          script: |
+            const labels = [
+              { name: "bug", color: "d73a4a", description: "Something does not work as written" },
+              { name: "enhancement", color: "a2eeef", description: "A change to the skill or the tools around it" },
+            ];
+            for (const label of labels) {
+              try {
+                await github.rest.issues.updateLabel({ ...context.repo, ...label });
+                core.info(`Updated ${label.name}`);
+              } catch (error) {
+                if (error.status !== 404) throw error;
+                await github.rest.issues.createLabel({ ...context.repo, ...label });
+                core.info(`Created ${label.name}`);
+              }
+            }

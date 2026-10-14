@@ -1,0 +1,7 @@
+interface:
+  display_name: "briefwright"
+  short_description: "Asks what's missing, then writes the full plan your AI agent can follow on its own"
+  default_prompt: "Turn this task into a master prompt a fresh agent session can run alone, asking me only what you cannot find out."
+
+policy:
+  allow_implicit_invocation: true

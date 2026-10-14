@@ -1,0 +1,15 @@
+{
+  "name": "vibecoding-1",
+  "description": "VibeCoding-1's plugins: briefwright, which asks what's missing, then writes the full plan your AI agent can follow on its own.",
+  "owner": {
+    "name": "VibeCoding-1"
+  },
+  "plugins": [
+    {
+      "name": "briefwright",
+      "source": "./",
+      "description": "Describe the job in one sentence. briefwright asks what's missing, then writes the full plan your AI agent can follow on its own: a master prompt for Claude Code, Codex or any agent that reads Agent Skills.",
+      "version": "1.0.0"
+    }
+  ]
+}

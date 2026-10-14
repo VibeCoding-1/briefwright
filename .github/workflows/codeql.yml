@@ -1,0 +1,73 @@
+# CodeQL code scanning of the Python code and of these workflows: on every push to main and every pull request
+# to it, once a week and by hand. Code scanning needs a public repository (a private one needs a paid plan), so
+# while this repository is private the first job says so and the analysis is skipped, and the run still succeeds;
+# the analysis starts on its own once the repository is public. This file is the code scanning setup, so
+# GitHub's default setup for CodeQL stays off.
+# Every action is pinned by commit SHA, with its release tag in the comment above it.
+name: CodeQL
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  schedule:
+    - cron: "41 3 * * 3"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  visibility:
+    name: Check that the repository is public
+    runs-on: ubuntu-24.04
+    outputs:
+      analyze: ${{ steps.visibility.outputs.analyze }}
+    steps:
+      # actions/github-script v9.0.0
+      - name: Read the repository's visibility
+        id: visibility
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
+        with:
+          script: |
+            const { data } = await github.rest.repos.get(context.repo);
+            core.setOutput("analyze", String(!data.private));
+            if (data.private) {
+              core.notice("The repository is private, so the CodeQL analysis is skipped until it is public.");
+            }
+
+  analyze:
+    name: CodeQL
+    needs: visibility
+    if: needs.visibility.outputs.analyze == 'true'
+    runs-on: ubuntu-24.04
+    permissions:
+      # to upload the results to code scanning; the job runs only the checkout and the CodeQL actions
+      security-events: write
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        language:
+          - actions
+          - python
+    steps:
+      # actions/checkout v7.0.1
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      # github/codeql-action v4.38.3; both languages are interpreted, so nothing is built
+      - name: Set up CodeQL
+        uses: github/codeql-action/init@24c54180a607b1449ed407dd24f251e4e9147c8d
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: none
+      # github/codeql-action v4.38.3
+      - name: Analyze
+        uses: github/codeql-action/analyze@24c54180a607b1449ed407dd24f251e4e9147c8d
+        with:
+          category: "/language:${{ matrix.language }}"

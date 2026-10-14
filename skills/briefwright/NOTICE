@@ -1,0 +1,54 @@
+Copyright 2026 VibeCoding-1 and contributors
+
+Licensed under the Apache License, Version 2.0 (see LICENSE).
+
+This skill is an original work. Ideas were adopted from the following
+permissively licensed projects, with attribution and without copying text:
+- Frontier-round interviewing, design tree, and writing-for-agents rules:
+  mattpocock/skills (MIT), https://github.com/mattpocock/skills
+- Request classification, plan header, implementer and reviewer prompt
+  shapes, fix-loop escalation, rulings ledger, verification-before-
+  completion: obra/superpowers (MIT), https://github.com/obra/superpowers
+- Ambiguity taxonomy, question-writing rules, clarification recording:
+  github/spec-kit (MIT), https://github.com/github/spec-kit
+- Ten-section generated-prompt contract, hard stops, delegation and
+  critic contracts: NicholasSpisak/gauntlet-loop (MIT),
+  https://github.com/NicholasSpisak/gauntlet-loop
+- Intent dimensions, memory block, agentic task brief template:
+  nidhinjs/prompt-master (MIT), https://github.com/nidhinjs/prompt-master
+- Coverage map, active pushback, red-team taxonomy, decisions-log schema:
+  Sorbh/interview-me (MIT), https://github.com/Sorbh/interview-me
+- Never-invent rule, open-questions table, gap checklist:
+  senu-nk/project-manager (MIT), https://github.com/senu-nk/project-manager
+- Loop decision tree and guardrails: fltman/loop-engineer (MIT),
+  https://github.com/fltman/loop-engineer
+- Research lead and subagent brief anatomy, evaluator-optimizer and
+  orchestrator-workers patterns: anthropics/claude-cookbooks (MIT),
+  https://github.com/anthropics/claude-cookbooks
+- Computed closure, void verdicts, the Goodhart flag, blind pairwise
+  comparison of pinned versions, context hygiene, the final re-verify and
+  the Named / Fetchable / Comparable bar check:
+  DandysLibertyn/gauntlet-loop (Apache-2.0),
+  https://github.com/DandysLibertyn/gauntlet-loop — ideas adopted in this
+  skill's own words; no text or code copied.
+- The Named / Fetchable / Comparable bar triad and blind side-by-side
+  comparison, as credited by that project: robonuggets/gauntlet-loop
+  (CC BY 4.0), https://github.com/robonuggets/gauntlet-loop
+- Critic playbooks, blind A/B mechanics, orchestration lessons:
+  robbrucker-rts/gauntlet-loop (MIT),
+  https://github.com/robbrucker-rts/gauntlet-loop
+- Task description template and ownership rules: wshobson/agents (MIT),
+  https://github.com/wshobson/agents
+- Critic order of operations and report format: alexgaoth/claude-iterate
+  (MIT), https://github.com/alexgaoth/claude-iterate
+- Bar discovery, role templates, anti-gaming: trilwu/gauntlet-loop-skills
+  (MIT), https://github.com/trilwu/gauntlet-loop-skills
+- Workflow pattern names and pre-flight rules: zircote/workflows-plugin
+  (MIT), https://github.com/zircote/workflows-plugin
+- Gate-first review and loop-engineering checklist: max9159/system-design
+  (MIT), https://github.com/max9159/system-design
+- Prompt-writing patterns learned from BridgeMind's published prompts
+  (https://www.bridgebench.ai/bridgemind-prompts and the bridge-mind
+  repositories on GitHub, MIT): ideas only, no text copied.
+
+The Gauntlet Loop method is Matt Shumer's (July 2026).

@@ -1,0 +1,77 @@
+# When a version tag (v1.2.0) is pushed, a GitHub release whose notes are that version's section of CHANGELOG.md,
+# cut by tools/release_notes.py. A tag with no section in CHANGELOG.md fails the run, saying so. A release that
+# already exists for the tag, such as one made by hand on GitHub's web page together with its tag, is left as it
+# is, and the run succeeds. A tag with a hyphen (v1.1.0-rc.1) is published as a pre-release, which GitHub never
+# marks as the latest release. The job that can write runs no code from the repository: it checks out nothing,
+# and its one step creates the release from the notes the first job cut.
+# Every action is pinned by commit SHA, with its release tag in the comment above it.
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+jobs:
+  notes:
+    name: Cut the notes from CHANGELOG.md
+    runs-on: ubuntu-24.04
+    outputs:
+      notes: ${{ steps.notes.outputs.notes }}
+    steps:
+      # actions/checkout v7.0.1
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      # The notes leave this job as an output, closed by a random delimiter that no line of them can match.
+      - name: Cut the notes
+        id: notes
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          python3 tools/release_notes.py "$TAG" > "$RUNNER_TEMP/notes.md"
+          delimiter="notes-$(openssl rand -hex 16)"
+          {
+            echo "notes<<$delimiter"
+            cat "$RUNNER_TEMP/notes.md"
+            echo "$delimiter"
+          } >> "$GITHUB_OUTPUT"
+
+  release:
+    name: Publish the release
+    needs: notes
+    runs-on: ubuntu-24.04
+    permissions:
+      # to create the release; this job checks out nothing and runs only the script below
+      contents: write
+    steps:
+      # actions/github-script v9.0.0; the notes reach the script through env, never through its source
+      - name: Create the release, unless the tag has one
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
+        env:
+          NOTES: ${{ needs.notes.outputs.notes }}
+        with:
+          script: |
+            const tag = context.ref.replace(/^refs\/tags\//, "");
+            const exists = (error) => error.status === 422
+              && (error.response?.data?.errors ?? []).some((item) => item.code === "already_exists");
+            try {
+              await github.rest.repos.getReleaseByTag({ ...context.repo, tag });
+              core.notice(`${tag} already has a release; it is left as it is.`);
+              return;
+            } catch (error) {
+              if (error.status !== 404) throw error;
+            }
+            try {
+              await github.rest.repos.createRelease({ ...context.repo, tag_name: tag, name: tag,
+                body: process.env.NOTES, prerelease: tag.includes("-") });
+              core.notice(`Released ${tag} with its section of CHANGELOG.md.`);
+            } catch (error) {
+              // A release made by hand while this run was starting: keep it.
+              if (!exists(error)) throw error;
+              core.notice(`${tag} already has a release; it is left as it is.`);
+            }

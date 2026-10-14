@@ -1,0 +1,9 @@
+{
+  "id": "vague-premium-landing",
+  "opening": "Prepare the prompt: build me a polished landing page for a supplement brand, it should look premium, as good as the best in the category. A Claude Code session on the web, model {MODEL}, unattended overnight.",
+  "working_folder": "project",
+  "fixtures": {},
+  "hidden_brief": "hidden-brief.md",
+  "max_person_turns": 10,
+  "invoke": "auto"
+}

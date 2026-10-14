@@ -1,0 +1,14 @@
+{
+  "name": "vibecoding-1",
+  "plugins": [
+    {
+      "name": "briefwright",
+      "source": "./",
+      "category": "Productivity",
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      }
+    }
+  ]
+}

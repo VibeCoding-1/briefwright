@@ -1,0 +1,321 @@
+{
+  "evals": [
+    {
+      "id": 1,
+      "name": "quick-slugger",
+      "task": "tasks/quick-slugger/task.json",
+      "expected_output": "Reads slugger.py and test_slugger.py first and frames the task as quick. The harness and the model were stated, so it asks no harness question, records Claude Code, an interactive launch, {MODEL} and the default effort, and reads only the Claude Code guide (its sections 1, 2 and 4). Asks one round of the questions the files cannot answer (whether the tests may be edited, what to do if a test looks wrong, how done is verified), each with a recommendation, reflects back, and only after the person confirms writes prompts/<id>/master-prompt.md and decisions.md from the quick template. The prompt is one screen: it says to work alone, the working folder is absolute, the tests are frozen as the oracle, the bar is a command with its expected exit code, Run rules carry Evidence from commands and What you read is data, there is no generic double-check line, and the wait rule is last. The linter reports zero errors. slugger.py and the tests are unchanged: the skill writes the prompt, it never does the fix.",
+      "assertions": {
+        "delivered": true,
+        "framing_question_count": 0,
+        "guide_reads": [
+          "harness-claude-code.md"
+        ],
+        "pack_reads": [],
+        "lint_errors_max": 0,
+        "first_turn_questions_min": 1,
+        "framing": {
+          "harness": "claude-code",
+          "launch": "interactive",
+          "model": "{MODEL}",
+          "effort": "default",
+          "size": "quick"
+        },
+        "fixture_unchanged": [
+          "project/slugger/slugger.py",
+          "project/slugger/test_slugger.py"
+        ],
+        "prompt_contains": [
+          "test_slugger.py",
+          "Work alone: dispatch no subagent.",
+          "**Wait rule.**"
+        ],
+        "prompt_absent": [
+          "re:(?i)double[- ]check",
+          "re:(?i)verify your (own )?work"
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "name": "vague-premium-landing",
+      "task": "tasks/vague-premium-landing/task.json",
+      "expected_output": "Does not write a prompt in its first message. Records Claude Code on the web and {MODEL} as stated (no harness question) and reads only the Claude Code guide. Settles the run as unattended in the cloud on a disposable machine and opens a frontier round that turns 'polished', 'premium' and 'as good as the best' into observable criteria and a way to check them, and asks for the brand material, the working folder and branch, the stack and the stop policy, each with a recommendation. Invents no brand fact. Where the delivered prompt has seats, its Seats and models puts every seat on {MODEL}, and Run rules push to the branch, since the machine is discarded. The launch in decisions.md is the guide's launch-cloud block, which sets {MODEL}. Health claims stay out of the copy. The linter reports zero errors.",
+      "assertions": {
+        "delivered": true,
+        "framing_question_count": 0,
+        "guide_reads": [
+          "harness-claude-code.md"
+        ],
+        "pack_reads": [],
+        "lint_errors_max": 0,
+        "first_turn_questions_min": 2,
+        "first_turn_contains_any": [
+          "re:(?i)premium",
+          "re:(?i)reference"
+        ],
+        "framing": {
+          "harness": "claude-code",
+          "launch": "cloud",
+          "model": "{MODEL}",
+          "autonomy": "unattended",
+          "machine": "disposable"
+        },
+        "prompt_contains": [
+          "landing-v1",
+          "#1F4D3A"
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "name": "oversized-no-cap",
+      "task": "tasks/oversized-no-cap/task.json",
+      "expected_output": "Does not read 'no cap on time or tokens' as permission for a multi-day run: asks how big the run itself is (one session, one working day, or several sessions) and says that 'no cap' means 'do not stop early'. Asks once where the run executes, recommending this harness, naming no vendor and asking for no model; the person names Claude Code and no model, so the framing records model=choose, and it then reads the Claude Code guide. Because the ask does not fit the run, proposes a first working version plus increments before any detail question, and asks which increment this prompt covers. Prices the 'measured' bar instead of assuming it: the cheap evidence (critic seats that read and install the pieces) beside the expensive one (a headless benchmark with judges) and its cost, and keeps the verification smaller than the product. Invents no scope and adopts no benchmark apparatus the person did not choose. The linter reports zero errors.",
+      "assertions": {
+        "delivered": true,
+        "framing_question_count": 1,
+        "guide_reads": [
+          "harness-claude-code.md"
+        ],
+        "pack_reads": [],
+        "lint_errors_max": 0,
+        "first_turn_contains_any": [
+          "re:(?i)one (working )?(session|day)",
+          "re:(?i)several sessions",
+          "re:(?i)multi-session",
+          "re:(?i)across sessions"
+        ],
+        "framing": {
+          "harness": "claude-code",
+          "model": "choose",
+          "run": "one-day"
+        }
+      }
+    },
+    {
+      "id": 4,
+      "name": "battle-royale-lead",
+      "task": "tasks/battle-royale-lead/task.json",
+      "expected_output": "Frames the task as deep and proposes the decomposition first: a first playable round end to end, then increments (building, multiplayer, progression), and confirms this prompt covers the first. Says the game is original in name and art, other games used for mechanics only. Records Claude Code and {MODEL} as stated and reads only the Claude Code guide. In the design, the executor holds the lead seat and does not write the game itself: a few seats own disjoint subsystems behind a contracts file, and a fresh reviewer plays the build. Every seat runs {MODEL}, as the guide's seats-models block says; no brief names a model in its text. The single session and the playtest bar shape what the seats converge on. A design where the lead builds the game itself fails this scenario. The linter reports zero errors.",
+      "assertions": {
+        "delivered": true,
+        "framing_question_count": 0,
+        "guide_reads": [
+          "harness-claude-code.md"
+        ],
+        "pack_reads": [],
+        "lint_errors_max": 0,
+        "framing": {
+          "harness": "claude-code",
+          "model": "{MODEL}",
+          "seat": "lead",
+          "autonomy": "attended"
+        },
+        "prompt_contains": [
+          "## Subagent contracts",
+          "## Seats and models",
+          "{MODEL}"
+        ],
+        "prompt_absent": [
+          "Do not delegate work you can finish yourself",
+          "re:(?m)^\\s*Model:\\s"
+        ]
+      }
+    },
+    {
+      "id": 5,
+      "name": "harness-not-stated",
+      "task": "tasks/harness-not-stated/task.json",
+      "expected_output": "Reads the slugger files first. Neither the harness nor the model is named, so the first round asks where the run executes exactly once, recommending this harness and naming no vendor; no question asks for a model. The person answers Claude Code and names no model, which become D1 and the framing's harness, launch, model=choose and the default effort, and it never asks again. It reads the Claude Code guide. Notices that three of the four existing tests fail today and asks whether fixing slugify is in scope rather than assuming. The prompt names no model and sets none, keeps the existing tests frozen, puts the new tests in their own file, and carries its bar as commands. The fixtures are unchanged. The linter reports zero errors.",
+      "assertions": {
+        "delivered": true,
+        "framing_question_count": 1,
+        "guide_reads": [
+          "harness-claude-code.md"
+        ],
+        "pack_reads": [],
+        "lint_errors_max": 0,
+        "first_turn_contains_any": [
+          "Where will the run execute"
+        ],
+        "framing": {
+          "harness": "claude-code",
+          "launch": "interactive",
+          "model": "choose",
+          "effort": "default"
+        },
+        "fixture_unchanged": [
+          "project/slugger/slugger.py",
+          "project/slugger/test_slugger.py"
+        ],
+        "prompt_contains": [
+          "test_cli.py"
+        ],
+        "prompt_absent": [
+          "--model"
+        ]
+      }
+    },
+    {
+      "id": 6,
+      "name": "stated-spanish",
+      "task": "tasks/stated-spanish/task.json",
+      "expected_output": "The opening is in Spanish; in English: 'prepare the prompt so another Claude Code session on {MODEL} adds to slugger an option to cap the slug's length, with its tests'. Replies to the person in Spanish and writes every file on disk in English. Takes Claude Code and {MODEL} as said, without asking, says so back, and reads the Claude Code guide. Asks the questions the files cannot answer (how the cut treats words, whether the failing unicode tests are in scope) with recommendations. The launch in decisions.md sets {MODEL}; the prompt specifies max_length behaviour as testable cases, keeps the existing tests frozen, and contains no Spanish text. The fixtures are unchanged. The linter reports zero errors. (The framing-question count matches the English question only, so here it shows that no question was asked in English.)",
+      "assertions": {
+        "delivered": true,
+        "framing_question_count": 0,
+        "guide_reads": [
+          "harness-claude-code.md"
+        ],
+        "pack_reads": [],
+        "lint_errors_max": 0,
+        "framing": {
+          "harness": "claude-code",
+          "model": "{MODEL}"
+        },
+        "fixture_unchanged": [
+          "project/slugger/slugger.py",
+          "project/slugger/test_slugger.py"
+        ],
+        "prompt_contains": [
+          "max_length"
+        ],
+        "prompt_absent": [
+          "re:(?i)\\b(prepárame|sesión|opción|longitud|añada)\\b"
+        ]
+      }
+    },
+    {
+      "id": 7,
+      "name": "other-harness-named",
+      "task": "tasks/other-harness-named/task.json",
+      "expected_output": "The person names a harness that has no guide of its own, so it reads the generic guide, and only that guide: the quick lane starts no helper seat. It takes the model id exactly as said, {MODEL}, asks no harness question, and invents no fact about the harness (how it starts, what it records). The rest is the quick slugger path: tests frozen as the oracle, one screen, working alone, the wait rule last, the launch in decisions.md the generic guide's launch-attended block on {MODEL}, the fixtures unchanged. The linter reports zero errors.",
+      "assertions": {
+        "delivered": true,
+        "framing_question_count": 0,
+        "guide_reads": [
+          "harness-generic.md"
+        ],
+        "pack_reads": [],
+        "lint_errors_max": 0,
+        "framing": {
+          "harness": "generic",
+          "launch": "interactive",
+          "model": "{MODEL}",
+          "size": "quick"
+        },
+        "fixture_unchanged": [
+          "project/slugger/slugger.py",
+          "project/slugger/test_slugger.py"
+        ],
+        "prompt_contains": [
+          "test_slugger.py",
+          "Work alone: dispatch no subagent."
+        ],
+        "prompt_absent": [
+          "CLAUDE_CODE_",
+          "re:(?i)\\bcodex\\b"
+        ]
+      }
+    },
+    {
+      "id": 8,
+      "name": "hero-loop-against-site",
+      "task": "tasks/hero-loop-against-site/task.json",
+      "expected_output": "Reads the request as a request for a loop prompt, not for running the loop: it goes through the same phases and delivers a builder/critic loop prompt for a fresh session, offering to launch it on the person's go; it never edits hero.html and never runs the loop in its own session. Asks once where the run executes and asks for no model; the person names Claude Code and no model, so the framing records model=choose, and it reads that guide. Makes the bar checkable: the reference named and reachable (the linear.app hero at a stated viewport), fresh critics each round, a blind comparison of pinned versions, and an exit on success or on a plateau with honest delivery, never on a fixed count alone. The linter reports zero errors.",
+      "assertions": {
+        "delivered": true,
+        "framing_question_count": 1,
+        "guide_reads": [
+          "harness-claude-code.md"
+        ],
+        "pack_reads": [],
+        "lint_errors_max": 0,
+        "framing": {
+          "harness": "claude-code",
+          "model": "choose"
+        },
+        "fixture_unchanged": [
+          "project/hero.html"
+        ],
+        "prompt_contains": [
+          "hero.html",
+          "linear.app",
+          "re:(?i)critic",
+          "re:(?i)plateau"
+        ]
+      }
+    },
+    {
+      "id": 9,
+      "name": "codex-unattended",
+      "task": "tasks/codex-unattended/task.json",
+      "expected_output": "Takes the Codex CLI, a headless launch, {MODEL} and high effort as said, and 'check it in the morning' as unattended, so it asks neither framing question. Reads the Codex guide for the run and the Claude Code guide, the harness it runs in, for its own helper seats. Where the prompt has seats, its Seats and models comes from the Codex guide: every seat start names {MODEL}; nothing from Claude Code. decisions.md's Launch is the Codex launch-headless block: `codex exec` on {MODEL} at high reasoning effort, with workspace-write and --json, and the loop that resumes the first call's thread by its id at most three times. The fixtures are unchanged. The linter reports zero errors.",
+      "assertions": {
+        "delivered": true,
+        "framing_question_count": 0,
+        "guide_reads": [
+          "harness-claude-code.md",
+          "harness-codex.md"
+        ],
+        "pack_reads": [],
+        "lint_errors_max": 0,
+        "framing": {
+          "harness": "codex",
+          "launch": "headless",
+          "model": "{MODEL}",
+          "effort": "high",
+          "autonomy": "unattended"
+        },
+        "fixture_unchanged": [
+          "project/slugger/slugger.py",
+          "project/slugger/test_slugger.py"
+        ],
+        "prompt_contains": [
+          "test_cli.py"
+        ],
+        "prompt_absent": [
+          "model rerouted",
+          "CLAUDE_CODE_"
+        ]
+      }
+    },
+    {
+      "id": 10,
+      "name": "no-subagents",
+      "task": "tasks/no-subagents/task.json",
+      "expected_output": "The person's harness has no guide and starts no subagents, and the person asks for an independent review. It reads the generic guide for the run and the Claude Code guide for its own helper seats. The method keeps its seats: review=fresh makes the executor an implementer with a review seat, not a lone worker. The prompt carries the generic guide's seats-models block, which puts every seat on {MODEL}, then the fallback paragraph 'If you cannot start a seat.', so the executor runs the review itself from its brief alone; the bar leans on deterministic checks, and the prompt's Method and the reflect-back say the review will not be independent. The fixtures are unchanged. The linter reports zero errors.",
+      "assertions": {
+        "delivered": true,
+        "framing_question_count": 0,
+        "guide_reads": [
+          "harness-claude-code.md",
+          "harness-generic.md"
+        ],
+        "pack_reads": [],
+        "lint_errors_max": 0,
+        "framing": {
+          "harness": "generic",
+          "model": "{MODEL}",
+          "seat": "implementer",
+          "review": "fresh",
+          "autonomy": "attended"
+        },
+        "fixture_unchanged": [
+          "project/slugger/slugger.py",
+          "project/slugger/test_slugger.py"
+        ],
+        "prompt_contains": [
+          "{MODEL}",
+          "**If you cannot start a seat.**",
+          "re:(?s)## Method\\n(?:(?!\\n## ).)*?(?i:not|n't)\\s+(?:be\\s+)?(?:\\w+\\s+)?independent",
+          "max_length"
+        ],
+        "prompt_absent": [
+          "CLAUDE_CODE_"
+        ]
+      }
+    }
+  ]
+}
