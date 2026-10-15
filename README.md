@@ -115,7 +115,7 @@ Every push and pull request runs the unit tests, the skill's self-check and the 
 - **How is it different from spec-kit, BMAD, OpenSpec, Task Master or superpowers?** Those guide your agent while it works: Spec Kit and OpenSpec turn what you want into specs, a plan and tasks; the BMad Method is an agile method from idea to working software; Taskmaster manages tasks drawn from your requirements; Superpowers is a development method built from skills that fire on their own. briefwright does one thing: it writes one master prompt, with its checks and stop rules, for a fresh session to run alone. It has not been tried alongside any of them.
 - **Why not just ask my agent to make a plan first?** briefwright reads your files and asks until nothing that changes the work is assumed, then picks a method that fits the task. It writes down what "done" means as checks your agent runs, wherever checks fit, and when to stop. Before you get the plan, a script checks it, and on larger jobs, where your agent can start them, fresh subagents read it cold.
 - **Does it pick a model for me?** No. It asks which harness the run will use and names no model itself. Each prompt with subagents tells the agents to give each one the model its work needs: the strongest available for planning, hard building and review, a faster one for searches and simple checks. If you name a model, the run uses that one, set at launch.
-- **Does it send my data anywhere?** The skill runs inside your agent and sends nothing itself: it is instructions plus a script that makes no network call. If you install with the `skills` CLI, that CLI counts installs anonymously unless `DISABLE_TELEMETRY=1` or `DO_NOT_TRACK=1` is set.
+- **Does it send my data anywhere?** The skill runs inside your agent and sends nothing itself: it is instructions plus a script that makes no network call. If you install with the `skills` CLI, that CLI counts installs anonymously unless `DISABLE_TELEMETRY=1` or `DO_NOT_TRACK=1` is set. See [Privacy](#privacy).
 - **Is it worth it for a small task?** A small task that touches nothing irreversible takes the quick lane: one round of questions, a short prompt, no subagents. To have the work done now, or for a one-line prompt, ask your agent directly.
 - **Can the run go unattended?** Yes. Say you will start it and leave it, and the prompt is written for a run nobody watches: one that decides alone, rides out usage limits and resumes from its own files. [The landing page](examples/premium-landing-page/) is such a prompt.
 - **What do I get?** Two files in `prompts/<task-id>/`: `master-prompt.md`, which a fresh session runs, and `decisions.md`, with every decision and its source, your own words, the open questions and the launch command. You start that session; the skill never runs the prompt itself.
@@ -129,6 +129,15 @@ Every push and pull request runs the unit tests, the skill's self-check and the 
 ## Contributing
 
 Issues and pull requests are welcome; [CONTRIBUTING.md](CONTRIBUTING.md) gives the checks to run and the rules a change keeps.
+
+## Privacy
+
+briefwright collects nothing and has no server. It runs inside your agent, under your agent's own permissions:
+
+- **It reads** files in the folder you run it in, to learn about the task. Those files may hold personal data; they stay where they are.
+- **It writes** two files there, `prompts/<task-id>/master-prompt.md` and `decisions.md`, which record your answers to its questions.
+- **It runs** one script, [`scripts/lint_prompt.py`](skills/briefwright/scripts/lint_prompt.py), on your machine, to check the prompt it wrote. The script is in this repository to read, uses only the Python standard library and makes no network call.
+- **It sends** nothing anywhere: no telemetry, no analytics, no account. Your conversation with your agent goes to that agent's provider under the provider's own terms, as it would without the skill.
 
 ## Licence
 
