@@ -5,7 +5,10 @@ Usage: python3 tools/scan_public.py --tree <dir> [--commit <rev> [--warn-metadat
 
 Every file under <dir> is scanned, its `.git` folder aside: each line of its content and its path. A file
 that is not UTF-8 text, or holds a NUL byte, is refused whole ("binary"), because its content cannot be
-read. Text a reader cannot see is refused too ("hidden-text"): zero-width characters, a soft hyphen,
+read. One exception: the plugin's directory icon, at exactly `.claude-plugin/icon.png`
+(staged as `packaging/claude-plugin.icon.png`), passes when its bytes match the SHA-256 pinned below
+(`ICON_SHA256`) and it holds only the PNG chunks IHDR, IDAT and IEND. The pin is what vouches for it: a person
+looked at that exact image. Any other PNG, or a changed icon until the pin is updated, stays "binary". Text a reader cannot see is refused too ("hidden-text"): zero-width characters, a soft hyphen,
 direction marks and overrides, invisible operators, a byte order mark, tag characters, supplementary
 variation selectors. An agent reads every character of a skill file; a reviewer reads only what
 renders. With --commit, the commit's author and committer (names and emails), its dates and its message
@@ -18,9 +21,11 @@ never carries what it found. Exit 0 clean, 1 findings, 2 usage or a commit that 
 Standard library only; Python 3.9 or newer.
 """
 import argparse
+import hashlib
 import ipaddress
 import os
 import re
+import struct
 import subprocess
 import sys
 
@@ -161,6 +166,25 @@ def scan_path(relpath):
     return found
 
 
+PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
+ICON_PATHS = (".claude-plugin/icon.png", "packaging/claude-plugin.icon.png")
+# The icon a person looked at (1024x1024, a white "b" and a mint block). Change it, then update this pin.
+ICON_SHA256 = "6cdce8412199a08d0e39edaf5b2dcf4c4a3081928471a9de0acd6c9934201eaf"
+
+
+def pinned_icon(rel, data):
+    """True only for the pinned icon at its own path: the digest matches and the chunks are IHDR, IDAT, IEND."""
+    if rel not in ICON_PATHS or hashlib.sha256(data).hexdigest() != ICON_SHA256:
+        return False
+    at, kinds = len(PNG_SIGNATURE), []
+    while data.startswith(PNG_SIGNATURE) and at + 12 <= len(data):
+        length, kind = struct.unpack(">I4s", data[at:at + 8])
+        kinds.append(kind)
+        at += 12 + length
+    return at == len(data) and set(kinds) <= {b"IHDR", b"IDAT", b"IEND"} and kinds[:1] == [b"IHDR"] \
+        and kinds[-1:] == [b"IEND"]
+
+
 def walk(tree):
     """Every entry under tree, its top-level .git aside, as (relative path, absolute path), sorted."""
     entries = []
@@ -186,6 +210,8 @@ def scan_tree(tree):
             continue
         with open(full, "rb") as handle:
             data = handle.read()
+        if pinned_icon(rel, data):
+            continue
         try:
             if b"\0" in data:
                 raise UnicodeDecodeError("utf-8", data, 0, 1, "NUL byte")
