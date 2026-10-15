@@ -5,9 +5,11 @@ this repository holds one literally.
 """
 import os
 import shutil
+import struct
 import subprocess
 import tempfile
 import unittest
+import zlib
 
 import support
 
@@ -234,6 +236,33 @@ class NamesAndBinaries(ScannerCase):
                     handle.write(data)
                 result = self.scan(tree)
                 self.assertRefused(result, "binary")
+
+    def test_only_the_pinned_icon_at_its_path_passes(self):
+        icon = None
+        for rel in (".claude-plugin/icon.png", "packaging/claude-plugin.icon.png"):
+            if os.path.isfile(os.path.join(support.ROOT, rel)):
+                with open(os.path.join(support.ROOT, rel), "rb") as handle:
+                    icon = handle.read()
+        self.assertIsNotNone(icon, "the plugin icon is missing")
+        def chunk(kind, body):
+            return struct.pack(">I", len(body)) + kind + body + struct.pack(">I", zlib.crc32(kind + body) & 0xFFFFFFFF)
+        crafted = (b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", b"token=" + b"x" * 200)
+                   + chunk(b"IDAT", b"not zlib") + chunk(b"IEND", b""))
+        cases = ((".claude-plugin/icon.png", icon, 0), ("packaging/claude-plugin.icon.png", icon, 0),
+                 ("skills/x/icon.png", icon, 1), ("icon.png", icon, 1),
+                 (".claude-plugin/icon.png", icon[:-1] + bytes([icon[-1] ^ 1]), 1),
+                 (".claude-plugin/icon.png", icon + b"secret", 1),
+                 (".claude-plugin/icon.png", crafted, 1))
+        for rel, data, code in cases:
+            with self.subTest(rel=rel, size=len(data)):
+                tree = self.tree()
+                os.makedirs(os.path.dirname(os.path.join(tree, rel)), exist_ok=True)
+                with open(os.path.join(tree, rel), "wb") as handle:
+                    handle.write(data)
+                if code:
+                    self.assertRefused(self.scan(tree), "binary")
+                else:
+                    self.assertEqual(self.scan(tree).returncode, 0)
 
     def test_a_symlink_is_refused(self):
         tree = self.tree()
